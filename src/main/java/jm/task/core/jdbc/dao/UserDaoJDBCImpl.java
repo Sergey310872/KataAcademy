@@ -3,8 +3,6 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import javax.persistence.Id;
-import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,22 +17,6 @@ public class UserDaoJDBCImpl implements UserDao {
              Statement statement = connection.createStatement()) {
             String simpleQuery = "CREATE TABLE IF NOT EXISTS User (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY (id), name varchar(50), lastName varchar(50), age int);";
             statement.executeUpdate(simpleQuery);
-//            StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + User.class.getSimpleName() + " (");
-//            Field[] fields = User.class.getDeclaredFields();
-//            for (int i = 0; i < fields.length; i++) {
-//                Field f = fields[i];
-//                query.append(f.getName() + (f.getType().getSimpleName().equals("String") ? " varchar(50)" : " int"));
-//                if (f.getAnnotation(Id.class) != null) {
-//                    query.append(" NOT NULL AUTO_INCREMENT, PRIMARY KEY (" + f.getName() + ")");
-//                }
-//                if (i < fields.length - 1) {
-//                    query.append(", ");
-//                } else {
-//                    query.append(");");
-//                }
-////                System.out.println(f.getName() + " / " + f.getType().getSimpleName() + " / " + f.getAnnotation(Id.class));
-//            }
-//            statement.executeUpdate(String.valueOf(query));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,6 +40,7 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
+            System.out.printf("User с именем — %s добавлен в базу данных\n", name);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,20 +65,15 @@ public class UserDaoJDBCImpl implements UserDao {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
                 User newUser = new User();
-//                int id =
                 newUser.setId(resultSet.getLong(1));
-//                String name =
                 newUser.setName(resultSet.getString(2));
-//                String lastName =
                 newUser.setLastName(resultSet.getString(3));
-//                byte age =
                 newUser.setAge(resultSet.getByte(4));
                 userList.add(newUser);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-//        System.out.println(userList);
         return userList;
     }
 
