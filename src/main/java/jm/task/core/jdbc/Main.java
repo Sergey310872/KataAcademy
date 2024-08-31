@@ -20,6 +20,8 @@ public class Main {
             System.out.println(user);
         }
 
+        userService.removeUserById(2);
+
         userService.cleanUsersTable();
         userService.dropUsersTable();
     }
