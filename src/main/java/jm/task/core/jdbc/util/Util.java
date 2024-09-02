@@ -30,15 +30,10 @@ public class Util {
                 settings.put(Environment.URL, "jdbc:mysql://localhost:3306/kata");
                 settings.put(Environment.USER, "root");
                 settings.put(Environment.PASS, "1972");
-//                settings.put(Environment.SHOW_SQL, "true");
-                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
 
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(User.class);
-                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                        .applySettings(configuration.getProperties()).build();
-
-                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+                sessionFactory = configuration.buildSessionFactory();
             } catch (Exception e) {
                 e.printStackTrace();
             }

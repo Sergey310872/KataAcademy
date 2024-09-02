@@ -5,6 +5,7 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
 
 import javax.persistence.Query;
 import java.sql.Connection;
@@ -21,23 +22,31 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement()) {
-            String simpleQuery = "CREATE TABLE IF NOT EXISTS User (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY (id), name varchar(50), lastName varchar(50), age int);";
-            statement.executeUpdate(simpleQuery);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            String simpleQuery = "CREATE TABLE IF NOT EXISTS User (id bigint NOT NULL AUTO_INCREMENT, PRIMARY KEY (id), name varchar(50), lastName varchar(50), age int);";
+            NativeQuery nativeQuery = session.createNativeQuery(simpleQuery);
+            nativeQuery.executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
     @Override
     public void dropUsersTable() {
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement()) {
-            String simpleQuery = "DROP TABLE IF EXISTS user";
-            statement.executeUpdate(simpleQuery);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            String simpleQuery = "DROP TABLE IF EXISTS user;";
+            NativeQuery nativeQuery = session.createNativeQuery(simpleQuery);
+            nativeQuery.executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
